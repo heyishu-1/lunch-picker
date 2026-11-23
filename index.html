@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机午餐推荐</title>
+    <style>
+        /* CSS 负责页面的颜值（Vibe Coding 的设计改进） */
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 { color: #ff6b6b; margin-bottom: 10px; }
+        p.subtitle { color: #888; font-size: 14px; margin-top: 0; margin-bottom: 30px; }
+        
+        .buttons { display: flex; justify-content: space-between; gap: 10px; }
+        button {
+            flex: 1;
+            padding: 15px 0;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        button:active { transform: translateY(0); }
+        
+        #btn-korean { background: #ff9f43; }
+        #btn-chinese { background: #ee5253; }
+        #btn-fastfood { background: #10ac84; }
+
+        .result-box {
+            margin: 30px 0;
+            padding: 30px 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px dashed #dfe6e9;
+            min-height: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        #result-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: #222f3e;
+            margin: 0;
+            transition: color 0.3s;
+        }
+        
+        .history { margin-top: 30px; text-align: left; }
+        .history h3 { font-size: 14px; color: #888; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .history ul { padding-left: 20px; font-size: 14px; color: #555; margin: 0; line-height: 1.6;}
+        
+        .footer { margin-top: 30px; font-size: 12px; color: #bbb; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🍱 今天吃什么？</h1>
+        <p class="subtitle">点击下方按钮，解决你的选择困难症</p>
+
+        <div class="buttons">
+            <button id="btn-korean" onclick="pickLunch(1, '韩餐')">韩餐</button>
+            <button id="btn-chinese" onclick="pickLunch(2, '中餐')">中餐</button>
+            <button id="btn-fastfood" onclick="pickLunch(3, '快餐')">快餐</button>
+        </div>
+
+        <div class="result-box">
+            <p id="result-text">请选择分类</p>
+        </div>
+
+        <div class="history">
+            <h3>📜 历史记录 (最近3次)</h3>
+            <ul id="history-list">
+                <li>暂无记录</li>
+            </ul>
+        </div>
+
+        <div class="footer">作者：贺意舒</div>
+    </div>
+
+    <script>
+        // JavaScript 负责核心逻辑（对应 C++ 的代码）
+        
+        // 1. 菜单表（完全对应 C++ 的二维数组）
+        const MENU = {
+            1: ["石锅拌饭", "泡菜汤", "部队锅"],
+            2: ["麻辣香锅", "番茄鸡蛋面", "黄焖鸡"],
+            3: ["汉堡", "炸鸡", "披萨"]
+        };
+
+        let history = []; // 新增功能：用于存储历史记录
+
+        // 2. 自定义函数：随机推荐逻辑
+        function pickLunch(category, categoryName) {
+            const resultText = document.getElementById('result-text');
+            
+            // 模拟老虎机抽奖滚动的动画效果（功能改进）
+            let count = 0;
+            const interval = setInterval(() => {
+                const randomDish = MENU[category][Math.floor(Math.random() * 3)];
+                resultText.innerText = randomDish;
+                resultText.style.color = "#b2bec3";
+                count++;
+
+                // 滚动 10 次后停下，得出最终结果
+                if (count > 10) {
+                    clearInterval(interval);
+                    
+                    // 生成最终的随机下标 (0~2)
+                    const finalIndex = Math.floor(Math.random() * 3);
+                    const finalDish = MENU[category][finalIndex];
+                    
+                    // 显示最终结果
+                    resultText.innerText = `推荐吃：${finalDish}`;
+                    resultText.style.color = "#222f3e";
+
+                    // 更新历史记录功能（功能改进）
+                    history.unshift(`${categoryName} - ${finalDish}`);
+                    if (history.length > 3) history.pop(); // 只保留最近 3 条
+                    
+                    const historyList = document.getElementById('history-list');
+                    historyList.innerHTML = history.map(item => `<li>${item}</li>`).join('');
+                }
+            }, 50); // 每 50 毫秒滚动一次
+        }
+    </script>
+</body>
+</html>
